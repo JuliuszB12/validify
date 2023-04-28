@@ -3,13 +3,14 @@ import subprocess
 import difflib
 import time
 
-PROGRAM_PATH = "C:\\Users\\Ptryb\\source\\repos\\AiSD1\\x64\\Debug\\AiSD1.exe"
+PROGRAM_PATH = "C:\\Users\\Ptryb\\source\\repos\\AiSD2\\x64\\Debug\\AiSD2.exe"
+SKIP = []
 
 
 def search_for_tests():
     for root, dirs, files in os.walk('tests'):
-        for file in files:
-            if file.endswith('.in'):
+        for file in sorted(files, key=lambda x: int(x.split('.')[0])):
+            if file.endswith('.in') and file.split('.')[0] not in SKIP:
                 yield os.path.join(root, file).rstrip(".in")
 
 
@@ -17,7 +18,7 @@ def run_test(input_file, output_file):
     with open(input_file, 'r') as in_file:
         with open(output_file, 'w') as out_file:
             proc = subprocess.Popen(PROGRAM_PATH, stdin=in_file, stdout=out_file)
-            return_code = proc.wait(3)
+            return_code = proc.wait(60)
     return return_code
 
 
